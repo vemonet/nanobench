@@ -48,15 +48,15 @@ Build and run Nanobench on http://localhost:37373
 mvn clean tomcat7:run
 ```
 
-### Package the app
+### Build the jar
 
-Package the `.jar` using maven at the root of the repository:
+Build the `.jar` using maven at the root of the repository:
 
 ```bash
 mvn clean install tomcat7:exec-war-only
 ```
 
-> It generates a `.jar` and a `.war` file in the `target` folder
+> It will generate a `.jar` and a `.war` file in the `target` folder
 
 Rename the jar:
 
