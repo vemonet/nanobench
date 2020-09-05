@@ -40,6 +40,13 @@ You can also install Nanobench from the source code to get the latest updates, o
 
 You will need to have [maven installed](https://maven.apache.org/install.html) to build the application.
 
+First clone the repository:
+
+```bash
+git clone https://github.com/peta-pico/nanobench.git
+cd nanobench
+```
+
 ### Run for development
 
 Build and run Nanobench on http://localhost:37373
