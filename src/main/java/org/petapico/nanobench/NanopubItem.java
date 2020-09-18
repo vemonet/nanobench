@@ -60,6 +60,12 @@ public class NanopubItem extends Panel {
 //		commentLink.add(new Label("comment-label", "comment"));
 		add(commentLink);
 
+		ExternalLink evidenceLink = new ExternalLink("evidence-link", "./publish?" +
+				"template=http://purl.org/np/RAG15--lYtzU_A2JFOYmM3VzL12iZuCkpwOZzivuAR0yI&" +
+				"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8));
+//		evidenceLink.add(new Label("evidence-label", "evidence"));
+		add(evidenceLink);
+
 		String positiveNotes = "";
 		String negativeNotes = "";
 		if (n.seemsToHaveSignature()) {
