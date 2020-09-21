@@ -68,8 +68,8 @@ public class ApiCall {
 			paramString = "?";
 			for (String k : params.keySet()) {
 				if (paramString.length() > 1) paramString += "&";
-				paramString += k + "=";
 				try {
+					paramString += k + "=";
 					paramString += URLEncoder.encode(params.get(k), Charsets.UTF_8.toString());
 				} catch (java.io.UnsupportedEncodingException e) {
 					e.printStackTrace();

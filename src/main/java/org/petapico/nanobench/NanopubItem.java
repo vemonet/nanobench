@@ -54,8 +54,8 @@ public class NanopubItem extends Panel {
 				retractLink.add(new Label("retract-label", ""));
 			}
 			add(retractLink);
-		} catch (java.io.UnsupportedEncodingException ex) {
-			ex.printStackTrace();
+		} catch (java.io.UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 
 		try {
@@ -64,17 +64,8 @@ public class NanopubItem extends Panel {
 					"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8.toString()));
 	//		commentLink.add(new Label("comment-label", "comment"));
 			add(commentLink);
-		} catch (java.io.UnsupportedEncodingException ex) {
-			ex.printStackTrace();
-		}
-
-		try {
-			ExternalLink evidenceLink = new ExternalLink("evidence-link", "./publish?" +
-					"template=http://purl.org/np/RAGe8pO5920r9jTWFDxUlt3YUNrvRDqzapexGGqZ_q6SU&" +
-					"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8.toString()));
-			add(evidenceLink);
-		} catch (java.io.UnsupportedEncodingException ex) {
-			ex.printStackTrace();
+		} catch (java.io.UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 
 		String positiveNotes = "";
