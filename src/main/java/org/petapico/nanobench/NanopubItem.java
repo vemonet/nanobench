@@ -61,9 +61,8 @@ public class NanopubItem extends Panel {
 		add(commentLink);
 
 		ExternalLink evidenceLink = new ExternalLink("evidence-link", "./publish?" +
-				"template=http://purl.org/np/RAG15--lYtzU_A2JFOYmM3VzL12iZuCkpwOZzivuAR0yI&" +
+				"template=http://purl.org/np/RAGe8pO5920r9jTWFDxUlt3YUNrvRDqzapexGGqZ_q6SU&" +
 				"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8));
-//		evidenceLink.add(new Label("evidence-label", "evidence"));
 		add(evidenceLink);
 
 		String positiveNotes = "";
