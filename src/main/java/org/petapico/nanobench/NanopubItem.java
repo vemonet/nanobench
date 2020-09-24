@@ -68,6 +68,15 @@ public class NanopubItem extends Panel {
 			e.printStackTrace();
 		}
 
+		try {
+			ExternalLink evidenceLink = new ExternalLink("evidence-link", "./publish?" +
+					"template=http://purl.org/np/RAGe8pO5920r9jTWFDxUlt3YUNrvRDqzapexGGqZ_q6SU&" +
+					"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8.toString()));
+			add(evidenceLink);
+		} catch (java.io.UnsupportedEncodingException ex) {
+			ex.printStackTrace();
+		}
+
 		String positiveNotes = "";
 		String negativeNotes = "";
 		if (n.seemsToHaveSignature()) {
