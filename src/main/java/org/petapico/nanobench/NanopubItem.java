@@ -70,7 +70,7 @@ public class NanopubItem extends Panel {
 
 		try {
 			ExternalLink evidenceLink = new ExternalLink("evidence-link", "./publish?" +
-					"template=http://purl.org/np/RAGe8pO5920r9jTWFDxUlt3YUNrvRDqzapexGGqZ_q6SU&" +
+					"template=http://purl.org/np/RA_tANaWEZaJioW8eHiD9on76KZpodJz03ZSohsblnxv4&" +
 					"param_thing=" + URLEncoder.encode(n.getUri(), StandardCharsets.UTF_8.toString()));
 			add(evidenceLink);
 		} catch (java.io.UnsupportedEncodingException ex) {
