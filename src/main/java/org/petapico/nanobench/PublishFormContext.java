@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
@@ -39,6 +38,7 @@ public class PublishFormContext implements Serializable {
 	private Map<IRI,IModel<String>> formComponentModels = new HashMap<>();
 	private Set<IRI> introducedIris = new HashSet<>();
 	private boolean isLocal;
+	private List<StatementItem> statementItems;
 
 	public PublishFormContext(ContextType contextType, String templateId) {
 		this.contextType = contextType;
@@ -148,17 +148,10 @@ public class PublishFormContext implements Serializable {
 		return iri;
 	}
 
-	public List<Panel> makeStatementItems(String componentId) {
-		List<Panel> statementItems = new ArrayList<>();
+	public List<StatementItem> makeStatementItems(String componentId) {
+		statementItems = new ArrayList<>();
 		for (IRI st : template.getStatementIris()) {
-			IRI subj = template.getSubject(st);
-			IRI pred = template.getPredicate(st);
-			IRI obj = (IRI) template.getObject(st);
-			if (template.isOptionalStatement(st)) {
-				statementItems.add(new OptionalStatementItem(componentId, subj, pred, obj, this));
-			} else {
-				statementItems.add(new StatementItem(componentId, subj, pred, obj, this));
-			}
+			statementItems.add(new StatementItem(componentId, st, this));
 		}
 		return statementItems;
 	}
@@ -170,25 +163,8 @@ public class PublishFormContext implements Serializable {
 				npCreator.addNamespace(p, np.getNamespace(p));
 			}
 		}
-		for (IRI st : template.getStatementIris()) {
-			IRI subj = processIri(template.getSubject(st));
-			IRI pred = processIri(template.getPredicate(st));
-			Value obj = processValue(template.getObject(st));
-			if (subj == null || pred == null || obj == null) {
-				if (template.isOptionalStatement(st)) {
-					continue;
-				} else {
-					throw new MalformedNanopubException("Field of non-optional statement not set.");
-				}
-			} else {
-				if (contextType == ContextType.ASSERTION) {
-					npCreator.addAssertionStatement(subj, pred, obj);
-				} else if (contextType == ContextType.PROVENANCE) {
-					npCreator.addProvenanceStatement(subj, pred, obj);
-				} else if (contextType == ContextType.PUBINFO) {
-					npCreator.addPubinfoStatement(subj, pred, obj);
-				}
-			}
+		for (StatementItem si : statementItems) {
+			si.addTriplesTo(npCreator);
 		}
 	}
 

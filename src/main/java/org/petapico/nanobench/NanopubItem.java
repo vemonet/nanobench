@@ -11,9 +11,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.Value;
 
 public class NanopubItem extends Panel {
 	
@@ -115,7 +113,7 @@ public class NanopubItem extends Panel {
 			@Override
 			protected void populateItem(Item<Statement> item) {
 				Statement st = item.getModelObject();
-				item.add(new StatementItem("assertion-statement", (IRI) st.getSubject(), st.getPredicate(), (Value) st.getObject(), n.getNanopub()));
+				item.add(new TripleItem("assertion-statement", st, n.getNanopub()));
 			}
 
 		});
@@ -127,7 +125,7 @@ public class NanopubItem extends Panel {
 			@Override
 			protected void populateItem(Item<Statement> item) {
 				Statement st = item.getModelObject();
-				item.add(new StatementItem("provenance-statement", (IRI) st.getSubject(), st.getPredicate(), (Value) st.getObject(), n.getNanopub()));
+				item.add(new TripleItem("provenance-statement", st, n.getNanopub()));
 			}
 
 		});
@@ -139,7 +137,7 @@ public class NanopubItem extends Panel {
 			@Override
 			protected void populateItem(Item<Statement> item) {
 				Statement st = item.getModelObject();
-				item.add(new StatementItem("pubinfo-statement", (IRI) st.getSubject(), st.getPredicate(), (Value) st.getObject(), n.getNanopub()));
+				item.add(new TripleItem("pubinfo-statement", st, n.getNanopub()));
 			}
 
 		});
