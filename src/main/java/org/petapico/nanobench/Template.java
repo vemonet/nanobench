@@ -66,7 +66,7 @@ public class Template implements Serializable {
 				if (entry.get("superseded").equals("1") || entry.get("superseded").equals("true")) continue;
 				if (entry.get("retracted").equals("1") || entry.get("retracted").equals("true")) continue;
 				Template t = new Template(entry.get("np"));
-				templates.add(t);
+				if (!t.isUnlisted()) templates.add(t);
 				templateMap.put(t.getId(), t);
 			}
 		} catch (IOException ex) {
@@ -102,6 +102,7 @@ public class Template implements Serializable {
 	public static final IRI ASSERTION_TEMPLATE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/AssertionTemplate");
 	public static final IRI PROVENANCE_TEMPLATE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/ProvenanceTemplate");
 	public static final IRI PUBINFO_TEMPLATE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/PubinfoTemplate");
+	public static final IRI UNLISTED_TEMPLATE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/UnlistedTemplate");
 	public static final IRI HAS_STATEMENT_PREDICATE = vf.createIRI("https://w3id.org/np/o/ntemplate/hasStatement");
 	public static final IRI LOCAL_RESOURCE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/LocalResource");
 	public static final IRI INTRODUCED_RESOURCE_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/IntroducedResource");
@@ -125,6 +126,7 @@ public class Template implements Serializable {
 	public static final IRI HAS_PREFIX_LABEL_PREDICATE = vf.createIRI("https://w3id.org/np/o/ntemplate/hasPrefixLabel");
 	public static final IRI OPTIONAL_STATEMENT_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/OptionalStatement");
 	public static final IRI GROUPED_STATEMENT_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/GroupedStatement");
+	public static final IRI REPEATABLE_STATEMENT_CLASS = vf.createIRI("https://w3id.org/np/o/ntemplate/RepeatableStatement");
 	public static final IRI HAS_DEFAULT_PROVENANCE_PREDICATE = vf.createIRI("https://w3id.org/np/o/ntemplate/hasDefaultProvenance");
 	public static final IRI HAS_REQUIRED_PUBINFO_ELEMENT_PREDICATE = vf.createIRI("https://w3id.org/np/o/ntemplate/hasRequiredPubinfoElement");
 
@@ -163,6 +165,10 @@ public class Template implements Serializable {
 		processTemplate(nanopub);
 	}
 
+	public boolean isUnlisted() {
+		return typeMap.get(nanopub.getAssertionUri()).contains(UNLISTED_TEMPLATE_CLASS);
+	}
+
 	public Nanopub getNanopub() {
 		return nanopub;
 	}
@@ -176,18 +182,22 @@ public class Template implements Serializable {
 	}
 
 	public String getLabel(IRI iri) {
+		iri = transform(iri);
 		return labelMap.get(iri);
 	}
 
 	public String getPrefix(IRI iri) {
+		iri = transform(iri);
 		return prefixMap.get(iri);
 	}
 
 	public String getPrefixLabel(IRI iri) {
+		iri = transform(iri);
 		return prefixLabelMap.get(iri);
 	}
 
 	public String getRegex(IRI iri) {
+		iri = transform(iri);
 		return regexMap.get(iri);
 	}
 
@@ -212,34 +222,49 @@ public class Template implements Serializable {
 	}
 
 	public boolean isLocalResource(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && (
 				typeMap.get(iri).contains(LOCAL_RESOURCE_CLASS) || typeMap.get(iri).contains(INTRODUCED_RESOURCE_CLASS)
 			);
 	}
 
 	public boolean isIntroducedResource(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(INTRODUCED_RESOURCE_CLASS);
 	}
 
 	public boolean isUriPlaceholder(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && 
 				(typeMap.get(iri).contains(URI_PLACEHOLDER_CLASS) || typeMap.get(iri).contains(TRUSTY_URI_PLACEHOLDER_CLASS));
 	}
 
 	public boolean isTrustyUriPlaceholder(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(TRUSTY_URI_PLACEHOLDER_CLASS);
 	}
 
 	public boolean isLiteralPlaceholder(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(LITERAL_PLACEHOLDER_CLASS);
 	}
 
 	public boolean isRestrictedChoicePlaceholder(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(RESTRICTED_CHOICE_PLACEHOLDER_CLASS);
 	}
 
 	public boolean isGuidedChoicePlaceholder(IRI iri) {
+		iri = transform(iri);
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(GUIDED_CHOICE_PLACEHOLDER_CLASS);
+	}
+
+	public boolean isPlaceholder(IRI iri) {
+		iri = transform(iri);
+		if (!typeMap.containsKey(iri)) return false;
+		List<IRI> m = typeMap.get(iri);
+		return m.contains(URI_PLACEHOLDER_CLASS) || m.contains(TRUSTY_URI_PLACEHOLDER_CLASS) || m.contains(LITERAL_PLACEHOLDER_CLASS) ||
+				m.contains(RESTRICTED_CHOICE_PLACEHOLDER_CLASS) || m.contains(GUIDED_CHOICE_PLACEHOLDER_CLASS);
 	}
 
 	public boolean isOptionalStatement(IRI iri) {
@@ -248,6 +273,10 @@ public class Template implements Serializable {
 
 	public boolean isGroupedStatement(IRI iri) {
 		return typeMap.containsKey(iri) && typeMap.get(iri).contains(GROUPED_STATEMENT_CLASS);
+	}
+
+	public boolean isRepeatableStatement(IRI iri) {
+		return typeMap.containsKey(iri) && typeMap.get(iri).contains(REPEATABLE_STATEMENT_CLASS);
 	}
 
 	public List<Value> getPossibleValues(IRI iri) {
@@ -532,6 +561,15 @@ public class Template implements Serializable {
 		for (List<IRI> l : statementMap.values()) {
 			l.sort(statementComparator);
 		}
+	}
+
+
+	private IRI transform(IRI iri) {
+		if (iri.stringValue().contains("__")) {
+			// TODO: Check that this double-underscore pattern isn't used otherwise:
+			return vf.createIRI(iri.stringValue().replaceFirst("__.*$", ""));
+		}
+		return iri;
 	}
 
 
